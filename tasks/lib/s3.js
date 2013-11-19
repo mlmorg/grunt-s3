@@ -16,6 +16,7 @@ var zlib = require('zlib');
 // Npm.
 var knox = require('knox');
 var mime = require('mime');
+var mkdirp = require('mkdirp');
 var deferred = require('underscore.deferred');
 var Tempfile = require('temporary/lib/file');
 
@@ -243,6 +244,9 @@ exports.init = function (grunt) {
     if (options.debug) {
       return dfd.resolve(util.format(MSG_DOWNLOAD_DEBUG, client.bucket, src, path.relative(process.cwd(), dest))).promise();
     }
+
+    // Recursively create directories to the file location, if they don't exist
+    mkdirp.sync(path.dirname(dest));
 
     // Create a local stream we can write the downloaded file to.
     var file = fs.createWriteStream(dest);
